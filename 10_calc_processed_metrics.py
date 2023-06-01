@@ -68,7 +68,7 @@ for i in test_num_:
     test_iou_unprocessed_results.append(iou.result().numpy())
     iou.reset_state()
     
-    print(count)
+    print(f“test number {i}/{len(test_num_)}”, end=”\r”)
     count+=1
 test_iou_processed_results = np.array(test_iou_processed_results)  
 test_iou_unprocessed_results = np.array(test_iou_unprocessed_results)  
@@ -112,6 +112,7 @@ for i in train_num_:
     train_iou_unprocessed_results.append(iou.result().numpy())
     iou.reset_state()
     print(count)
+    print(f“test number {i}/{len(train_num_)}”, end=”\r”)
     count+=1
 
 train_iou_processed_results = np.array(train_iou_processed_results)  
