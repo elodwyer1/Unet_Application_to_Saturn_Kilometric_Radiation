@@ -153,7 +153,7 @@ test_unselected.insert(4, 'ind', test_unselected_inds, True)
 ############ Remove contours from mask that didn't fulfill criterion#########
 test_processed_masks=[]
 for i in test_num_:
-    print(i)
+    print(f“test number {i}/{len(test_num_)}”, end=”\r”)
     mask = remove(i, test_unselected, test_results_masked, test_contours_unmapped)   
     test_processed_masks.append(mask)
 test_processed_masks=np.array(test_processed_masks)
@@ -210,7 +210,7 @@ train_unselected.insert(4, 'ind', train_unselected_inds, True)
 ############ Remove contours from mask that didn't fulfill criterion#########
 train_processed_masks=[]
 for i in train_num_:
-    print(i)
+    print(f“test number {i}/{len(train_num_)}”, end=”\r”)
     mask = remove(i, train_unselected, train_results_masked, train_contours_unmapped)   
     train_processed_masks.append(mask)
 train_processed_masks=np.array(train_processed_masks)
