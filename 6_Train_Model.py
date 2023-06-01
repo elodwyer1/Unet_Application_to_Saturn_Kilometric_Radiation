@@ -273,15 +273,6 @@ test_ids = [i for i in string_ids if i in test_ids]
 
 print(len(train_ids), len(valid_ids), len(test_ids))
 
-"""#### Define model.
-
-##### Documenting Model.
-write description of type of model you are testing here, i.e standard U-Net, U-Net with extra convolutional layers, U-Net with regularization etc.
-If there is an architecture change, then make another .txt file for saving the results.
-Only run this when making .txt file for the first time.
-"""
-#Name of file containing model
-
 if not os.path.exists(output_data_fp + f'/{model_name}'):
     os.make_dirs(output_data_fp + f'/{model_name}')
 
@@ -380,10 +371,10 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoi
 #Callback for saving metrics at each epoch during training to .csv file.
 csv_logger = CSVLogger(checkpoint_filepath +  "/model_history_log.csv", append=True)
 #Fit model.
-model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=train_steps, validation_steps=valid_steps, epochs=epochs,verbose=1, callbacks=[model_checkpoint_callback,pltCallBack, csv_logger])
+#model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=train_steps, validation_steps=valid_steps, epochs=epochs,verbose=1, callbacks=[model_checkpoint_callback,pltCallBack, csv_logger])
 #if you need to load pre-trained model
-#model = keras.models.load_model(checkpoint_filepath)
-
+model.load_weights(output_data_fp + f'/{model_name}/')
+tf.keras.models.save_model(model, output_data_fp + f'/{model_name}')
 """##### Calculate the average of each metric for the whole training and validation set."""
 
 total_gen = DataGen(total_ids, train_path, image_h=image_h, image_w=image_w, batch_size=1)

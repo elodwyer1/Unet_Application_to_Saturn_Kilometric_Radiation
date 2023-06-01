@@ -133,7 +133,7 @@ image_w = 128
 test_gen = DataGen(test_ids, test_path, image_h=image_h, image_w=image_w, batch_size=1)
 
 #Path to folder where model will be stored.
-checkpoint_filepath = output_data_fp + model_name
+checkpoint_filepath = output_data_fp + '/' + model_name
 thresh = np.load(checkpoint_filepath + '/best_thresh.npy')
 
 """##### Load pre-trained model."""
