@@ -371,10 +371,10 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoi
 #Callback for saving metrics at each epoch during training to .csv file.
 csv_logger = CSVLogger(checkpoint_filepath +  "/model_history_log.csv", append=True)
 #Fit model.
-model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=train_steps, validation_steps=valid_steps, epochs=epochs,verbose=1, callbacks=[model_checkpoint_callback,pltCallBack, csv_logger])
+#model.fit(train_gen, validation_data=valid_gen, steps_per_epoch=train_steps, validation_steps=valid_steps, epochs=epochs,verbose=1, callbacks=[model_checkpoint_callback,pltCallBack, csv_logger])
 #if you need to load pre-trained model
-#model = keras.models.load_model(checkpoint_filepath)
-
+model.load_weights(output_data_fp + f'/{model_name}/')
+tf.keras.models.save_model(model, output_data_fp + f'/{model_name}')
 """##### Calculate the average of each metric for the whole training and validation set."""
 
 total_gen = DataGen(total_ids, train_path, image_h=image_h, image_w=image_w, batch_size=1)
