@@ -20,8 +20,7 @@ model_name = config['filepaths']['model_name']
 
 
 def get_contours(mask):
-    binary=np.where(mask>0.5, 1, 0)
-    cv2img = binary.astype(np.uint8)
+    cv2img = mask.astype(np.uint8)
     contours, hierarchy = cv2.findContours(cv2img, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     reshape_contours = lambda x: np.reshape(x, (x.shape[0], x.shape[-1]))
     reshaped_contours = [reshape_contours(i) for i in contours]
@@ -121,10 +120,10 @@ test_num_ = np.arange(test_results.shape[0])
 #image 'id' for loading test images.
 ids = [str(i).zfill(3) for i in test_num_]
 ##Find coordinates of contours calculated from masks.
-test_im_id, test_contours_total_, test_contours_unmapped= total_contours(test_num_, test_results)
+test_im_id, test_contours_total_, test_contours_unmapped= total_contours(test_num_, test_results_masked)
 #Dataframe with the following features of each contour: area of contour, minimum frequency (in kHz),
 # delta frequency (in pixels), delta time (in pixels) and the image id.
-test_df = analyse_contours(test_num_, test_results)
+test_df = analyse_contours(test_num_, test_results_masked)
 #Find the class of the image that each contour resides in.
 labels_contour = test_label[test_df['id']]
 #assign image class to dataframe with contour features.
@@ -178,10 +177,10 @@ train_num_ = np.arange(train_results.shape[0])
 #image 'id' for loading test images.
 ids = [str(i).zfill(3) for i in train_num_]
 ##Find coordinates of contours calculated from masks.
-train_im_id, train_contours_total_, train_contours_unmapped= total_contours(train_num_, train_results)
+train_im_id, train_contours_total_, train_contours_unmapped= total_contours(train_num_, train_results_masked)
 #Dataframe with the following features of each contour: area of contour, minimum frequency (in kHz),
 # delta frequency (in pixels), delta time (in pixels) and the image id.
-train_df = analyse_contours(train_num_, train_results)
+train_df = analyse_contours(train_num_, train_results_masked)
 #Find the class of the image that each contour resides in.
 train_labels_contour = train_labelz[train_df['id']]
 #assign image class to dataframe with contour features.
