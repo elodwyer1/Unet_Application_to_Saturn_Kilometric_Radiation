@@ -45,7 +45,7 @@ test_results_masked = np.where(test_results.copy()>=thresh, 1, 0)
 #Load processed masks
 test_processed_masks = np.load(output_data_fp + f'/{model_name}/test_processed_masks_withhigherthresh.npy', \
                   allow_pickle=True)
-test_processed_masks = (test_processed_masks == 0)
+#test_processed_masks = (test_processed_masks == 0)
 
 #empty list for metrics to be appended to 
 test_iou_processed_results = []
@@ -55,11 +55,11 @@ count=0
 #zip through each image and calculate given metric by camparing to true mask.
 for i in test_num_:
     mask = load_mask(str(i).zfill(3), test_path)
-    proc_result = np.ma.masked_array(test_results[i, :, :], test_processed_masks[i, :, :]).filled(0)
+    #proc_result = np.ma.masked_array(test_results[i, :, :], test_processed_masks[i, :, :]).filled(0)
     iou = tf.keras.metrics.BinaryIoU(target_class_ids=[0, 1], threshold=thresh)
     
     #Processed
-    iou.update_state(mask, proc_result)
+    iou.update_state(mask, test_processed_masks[i, :, :])
     test_iou_processed_results.append(iou.result().numpy())
     iou.reset_state()
     
@@ -68,7 +68,7 @@ for i in test_num_:
     test_iou_unprocessed_results.append(iou.result().numpy())
     iou.reset_state()
     
-    print(f“test number {i}/{len(test_num_)}”, end=”\r”)
+    print('test number {i}/{len(test_num_)}', end='\n')
     count+=1
 test_iou_processed_results = np.array(test_iou_processed_results)  
 test_iou_unprocessed_results = np.array(test_iou_unprocessed_results)  
@@ -93,17 +93,17 @@ train_num_ = np.arange(train_results.shape[0])
 #load processed masks
 train_processed_masks = np.load(output_data_fp + f'/{model_name}/train_processed_masks_withhigherthresh.npy', \
                   allow_pickle=True)
-train_processed_masks = (train_processed_masks == 0)
+#train_processed_masks = (train_processed_masks == 0)
 train_iou_processed_results = []
 train_iou_unprocessed_results = []
 count=0
 #zip through each image and calculate IoU by camparing to true mask.
 for i in train_num_:
     mask = load_mask(str(i).zfill(3), train_path)
-    result=np.ma.masked_array(train_results[i, :, :], train_processed_masks[i, :, :]).filled(0)
+    #result=np.ma.masked_array(train_results[i, :, :], train_processed_masks[i, :, :]).filled(0)
     #processed
     iou= tf.keras.metrics.BinaryIoU(target_class_ids=[0, 1], threshold=thresh)
-    iou.update_state(mask, result)
+    iou.update_state(mask, train_processed_masks[i, :, :])
     train_iou_processed_results.append(iou.result().numpy())
     iou.reset_state()
     #unprocessed
@@ -112,7 +112,7 @@ for i in train_num_:
     train_iou_unprocessed_results.append(iou.result().numpy())
     iou.reset_state()
     print(count)
-    print(f“test number {i}/{len(train_num_)}”, end=”\r”)
+    print(f'test number {i}/{len(train_num_)}', end='\n')
     count+=1
 
 train_iou_processed_results = np.array(train_iou_processed_results)  

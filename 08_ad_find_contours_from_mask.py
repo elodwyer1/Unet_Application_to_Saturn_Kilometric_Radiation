@@ -10,6 +10,7 @@ import cv2
 import numpy as np
 import pandas as pd
 import configparser
+import matplotlib.pyplot as plt
 from shapely.geometry import Point, Polygon, LineString, MultiPoint
 from shapely.validation import make_valid
 config = configparser.ConfigParser()
@@ -150,15 +151,16 @@ test_unselected = test_df.loc[test_unselected_inds, :].reset_index(drop=True)
 test_unselected.insert(4, 'ind', test_unselected_inds, True)
 
 ############ Remove contours from mask that didn't fulfill criterion#########
+'''
 test_processed_masks=[]
 for i in test_num_:
-    print(f“test number {i}/{len(test_num_)}”, end=”\r”)
+    print(f'test number {i}/{len(test_num_)}', end='\n')
     mask = remove(i, test_unselected, test_results_masked, test_contours_unmapped)   
     test_processed_masks.append(mask)
 test_processed_masks=np.array(test_processed_masks)
 np.save(output_data_fp + f'/{model_name}' + '/test_processed_masks_withhigherthresh.npy', test_processed_masks)
 
-
+'''
 ###### Analyse Training Set ###############################
 
 #Load Data
@@ -205,12 +207,20 @@ train_unselected_inds = [i for i in range(len(train_df)) if i not in train_selec
 train_unselected = train_df.loc[train_unselected_inds, :].reset_index(drop=True)
 #Assign column with index of each contour
 train_unselected.insert(4, 'ind', train_unselected_inds, True)
+test_lfe = test_unselected.loc[test_unselected['label']!='NoLFE', 'id']
+test_nolfe = test_unselected.loc[test_unselected['label']=='NoLFE', 'id']
+train_lfe = train_unselected.loc[train_unselected['label']!='NoLFE', 'id']
+train_nolfe = train_unselected.loc[train_unselected['label']=='NoLFE', 'id']
+print(test_lfe.nunique(), test_nolfe.nunique())
+print(train_lfe.nunique(), train_nolfe.nunique())
+'''
 
 ############ Remove contours from mask that didn't fulfill criterion#########
 train_processed_masks=[]
 for i in train_num_:
-    print(f“test number {i}/{len(train_num_)}”, end=”\r”)
+    print(f'train number {i}/{len(train_num_)}', end='\r')
     mask = remove(i, train_unselected, train_results_masked, train_contours_unmapped)   
     train_processed_masks.append(mask)
 train_processed_masks=np.array(train_processed_masks)
 np.save(output_data_fp + f'/{model_name}' + '/train_processed_masks_withhigherthresh.npy', train_processed_masks)
+'''

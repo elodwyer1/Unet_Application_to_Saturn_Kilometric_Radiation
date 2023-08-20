@@ -156,9 +156,9 @@ def make_hist_norm(ax, df, label, bins,percentiles):
     ax.set_ylim(0, max(norm_hist_)+0.05)
 
     if percentiles == True:
-        median_ = round(np.percentile(df[label], 50), 2)
-        p75 = round(np.percentile(df[label], 75), 2)
-        p25 = round(np.percentile(df[label], 25), 2)
+        median_ = round(np.percentile(df[label], 50), 3)
+        p75 = round(np.percentile(df[label], 75), 3)
+        p25 = round(np.percentile(df[label], 25), 3)
         ax.vlines(p75, 0, max(norm_hist_)+0.1, linestyle='dotted', label='75th percentile={}'.format(p75))
         ax.vlines(median_, 0, max(norm_hist_)+0.1, linestyle='dotted',label=f'50th percentile={median_}')
         ax.vlines(p25, 0, max(norm_hist_)+0.1, linestyle='dotted', label='25th percentile={}'.format(p25))
@@ -238,8 +238,8 @@ plt.savefig(figure_fp + '/lfe_sm_metrics_plot.png')
 plt.clf()
 
 #Contour Analysis
-im_id, contours_total, contours_unmapped = total_contours(test_num_,test_results)
-test_df = analyse_contours(test_num_,test_results)
+im_id, contours_total, contours_unmapped = total_contours(test_num_,test_results_masked)
+test_df = analyse_contours(test_num_,test_results_masked)
 # Separate polygons according to criterion
 test_selected = test_df.loc[(test_df['delta_f']>=100) & (test_df['min_f'] < 100), :]
 test_selected_inds = np.array(test_selected.index).astype(int)
@@ -253,8 +253,9 @@ test_unselected.insert(4, 'ind', test_unselected_inds, True)
 ############ Remove contours from mask that didn't fulfill criterion#########
 
 lfe_sm_processed_masks=[]
+
 for i in test_num_:
-    print(i)
+    print(f'{i}', end='\r')
     mask = remove(i, test_unselected, test_results_masked, contours_unmapped)   
     lfe_sm_processed_masks.append(mask)
 lfe_sm_processed_masks=np.array(lfe_sm_processed_masks)
@@ -264,18 +265,18 @@ np.save(output_data_fp + f'/{model_name}' + '/train_processed_masks_withhigherth
 lfe_sm_iou_processed = []
 count=0
 #zip through each image and calculate given metric by camparing to true mask.
-lfe_sm_processed_masks = (lfe_sm_processed_masks == 0)
+#lfe_sm_processed_masks = (lfe_sm_processed_masks == 0)
 for i in test_num_:
     mask = load_mask(str(i).zfill(3), test_path)
-    proc_result = np.ma.masked_array(test_results[i, :, :], lfe_sm_processed_masks[i, :, :]).filled(0)
+    #proc_result = np.ma.masked_array(test_results[i, :, :], lfe_sm_processed_masks[i, :, :]).filled(0)
     iou = tf.keras.metrics.BinaryIoU(target_class_ids=[0, 1], threshold=thresh)
     
     #Processed
-    iou.update_state(mask, proc_result)
+    iou.update_state(mask, lfe_sm_processed_masks[i, :, :])
     lfe_sm_iou_processed.append(iou.result().numpy())
     iou.reset_state()
     
-    print(count)
+    print(f'{i}', end='\r')
     count+=1
 lfe_sm_iou_processed = np.array(lfe_sm_iou_processed)
 np.save(output_data_fp + f'/{model_name}/lfe_sm_processed_iou.npy', lfe_sm_iou_processed)

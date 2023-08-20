@@ -9,10 +9,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import clear_output
 import pandas as pd
+from collections import defaultdict
+from PIL import ImageFont
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from tensorflow import keras
 from keras import layers
+import visualkeras
 from matplotlib.ticker import MaxNLocator
 import configparser
 config = configparser.ConfigParser()
@@ -434,5 +437,17 @@ test_acc_df['index']=np.arange(len(test_acc_df))
 test_label = checkpoint_filepath +  '/test_acc_df.csv'
 test_acc_df.to_csv(test_label)
 '''
+
+### Plot schematic of model
+font = ImageFont.truetype(input_data_fp + '/ARIBL0.ttf', size=60)
+color_map = defaultdict(dict)
+color_map[keras.layers.Input]['fill'] = 'slategrey'
+color_map[layers.Conv2D]['fill'] = 'steelblue'
+color_map[layers.Dropout]['fill'] = 'orange'
+color_map[layers.MaxPooling2D]['fill'] = 'powderblue'
+color_map[layers.UpSampling2D]['fill'] = 'lightgray'
+color_map[layers.Concatenate]['fill'] = 'gray'
+save_fig_to = output_data_fp + f'/{model_name}/figures/model_arc_vol.png'
+visualkeras.layered_view(model, legend=True,scale_xy=20,scale_z=1/9, color_map=color_map, to_file=save_fig_to,  spacing=95, font=font, draw_volume=True)# write and show
 
 
