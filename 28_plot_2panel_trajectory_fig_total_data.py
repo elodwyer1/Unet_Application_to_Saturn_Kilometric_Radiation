@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Fri Sep  1 14:40:57 2023
+
+@author: eliza
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Wed May 24 12:31:25 2023
 
 @author: eliza
@@ -38,11 +45,10 @@ def datetime_todoy2004(x):
     doy_from04 = doy_current+days
     return doy_from04
 
+data_name = '2004001_2017258'
 
-df=pd.read_csv(input_data_fp + '/total_timestamps.csv', parse_dates=['start','end'])
-LFE_labels = ['LFE','LFE_dg','LFE_ext','LFE_m','LFE_sp']
-nolfe = df.loc[(df['label']=='NoLFE'),:].reset_index(drop=True)
-lfe = df.loc[(df['label'].isin(LFE_labels)),:].reset_index(drop=True)
+lfe=pd.read_csv(output_data_fp + f'/{model_name}/{data_name}_catalogue.csv', parse_dates=['start','end'])
+
 traj_data = pd.read_csv(input_data_fp + '/traj_df_allyears.csv',parse_dates=['datetime_ut'])
 
 
@@ -52,22 +58,14 @@ for i,j in zip(lfe['start'], lfe['end']):
     lfe_times.append(a)
 lfe_times=pd.concat(lfe_times, axis=0)
 
-nolfe_times=[]
-for i,j in zip(nolfe['start'], nolfe['end']):
-    a=traj_data.loc[traj_data["datetime_ut"].between(i,j),:]
-    nolfe_times.append(a)
-nolfe_times=pd.concat(nolfe_times, axis=0)
 
-
-lfe_and_nolfe = pd.concat([lfe_times, nolfe_times], axis=0)
-lfe_and_nolfe=lfe_and_nolfe.sort_values(by=['datetime_ut'])
 
 latitude=traj_data['lat']
 time = traj_data['doyfrac']
 time_doy04 = traj_data['datetime_ut'].apply(datetime_todoy2004)
 
 lfestart_doy=lfe['start'].apply(datetime_todoy2004)
-nolfestart_doy=nolfe['start'].apply(datetime_todoy2004)
+
 
 years=np.arange(2004, 2018, 1)
 year_labels=[str(i) for i in years]
@@ -92,14 +90,12 @@ max_=roundup(max(time_doy04))
 bins=np.arange(0, max_+1, 50)
 h, b = np.histogram(lfestart_doy, bins=bins)
 ax.hist(b[:-1], b, weights=h, linewidth=2,color='orange',label='LFE',histtype='step')
-h, b = np.histogram(nolfestart_doy, bins=bins)
-ax.hist(b[:-1], b, weights=h, linewidth=2,color='skyblue',label='Non-LFE',histtype='step')
 ax.tick_params(axis='both', which='major', labelsize=18)
-ax.set_ylim(0, 165)
 ax2 = ax.twinx()
 ax.tick_params(axis='both', which='major', labelsize=18)
 ax2.set_ylabel('Latitude ($^{\circ}$)',fontsize=18)
 ax2.set_ylim(-90,90)
+ax.set_ylim(0, 165)
 ax2.yaxis.set_major_locator(MultipleLocator(30))
 ax2.yaxis.set_major_formatter('{x:.0f}')
 ax2.tick_params(axis='both', which='major', labelsize=18)
@@ -126,13 +122,11 @@ splits = np.load(input_data_fp + '/orbit_indices.npy', allow_pickle=True)
 x_ = np.split(traj_data['localtime'], splits)
 y_=np.split(latitude, splits)
 for i in range(len(x_)):
-    ax3.plot(x_[i], y_[i],color='gray')  
+    ax3.plot(x_[i], y_[i],linewidth=0.5, color='gray')  
 for i, j in zip(lfe['start'], lfe['end']):
     traj = traj_data.loc[traj_data['datetime_ut'].between(i, j),:]
-    ax3.plot(traj['localtime'], traj['lat'], linewidth=1,color='orange', label='LFE')
-for i, j in zip(nolfe['start'], nolfe['end']):
-    traj = traj_data.loc[traj_data['datetime_ut'].between(i, j),:]
-    ax3.plot(traj['localtime'], traj['lat'],linewidth=1, color='skyblue', label='Non-LFE')
+    ax3.plot(traj['localtime'], traj['lat'], linewidth=0.5, color='orange', label='LFE')
+
 ax3.set_xlabel('Local Time (Hrs)',fontsize=22)
 ax3.set_ylabel('Latitude ($^{\circ}$)',fontsize=22)
 ax3.set_ylim(-90,90)
@@ -145,8 +139,4 @@ ax3.set_xlim(0,24)
 legend_without_duplicate_labels(ax3)
 plt.tight_layout()
 #plt.show()
-plt.savefig(figure_fp + "/traj_fig_Smallbin.png")
-
-
-
-
+plt.savefig(figure_fp + "/total_cassini_traj_fig.png")

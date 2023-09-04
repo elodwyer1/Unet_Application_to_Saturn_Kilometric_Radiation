@@ -241,7 +241,7 @@ plt.clf()
 im_id, contours_total, contours_unmapped = total_contours(test_num_,test_results_masked)
 test_df = analyse_contours(test_num_,test_results_masked)
 # Separate polygons according to criterion
-test_selected = test_df.loc[(test_df['delta_f']>=100) & (test_df['min_f'] < 100), :]
+test_selected = test_df.loc[(test_df['delta_t']>=10) & (test_df['delta_f']>=100) & (test_df['min_f'] < 100), :]
 test_selected_inds = np.array(test_selected.index).astype(int)
 selected_contours = [contours_total[i] for i in test_selected_inds]
 test_selected.insert(4, 'ind', test_selected_inds, True)
@@ -255,7 +255,7 @@ test_unselected.insert(4, 'ind', test_unselected_inds, True)
 lfe_sm_processed_masks=[]
 
 for i in test_num_:
-    print(f'{i}', end='\r')
+    print(f'{i}/{len(test_num_)}', end='\n')
     mask = remove(i, test_unselected, test_results_masked, contours_unmapped)   
     lfe_sm_processed_masks.append(mask)
 lfe_sm_processed_masks=np.array(lfe_sm_processed_masks)
@@ -276,7 +276,7 @@ for i in test_num_:
     lfe_sm_iou_processed.append(iou.result().numpy())
     iou.reset_state()
     
-    print(f'{i}', end='\r')
+    print(f'{i}/{len(test_num_)}', end='\n')
     count+=1
 lfe_sm_iou_processed = np.array(lfe_sm_iou_processed)
 np.save(output_data_fp + f'/{model_name}/lfe_sm_processed_iou.npy', lfe_sm_iou_processed)

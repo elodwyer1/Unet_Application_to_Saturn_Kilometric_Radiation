@@ -243,11 +243,11 @@ def make_hist_norm(ax, df, label, bins,percentiles,fontsize):
     return ax
 
 thresh = np.load(output_data_fp + f'/{model_name}/best_thresh.npy')
-data_name = 'test_2006001_2007001'
+data_name = '2006001_2007001'
 ###### Analyse Test Set ###############################
 
 test_path = output_data_fp + f"/{data_name}"
-test_res = np.load(output_data_fp + f'/{model_name}/{data_name}_av_overlap_combined.npy', \
+test_res = np.load(output_data_fp + f'/{model_name}/test_{data_name}_av_overlap_combined.npy', \
                   allow_pickle=True)
     
 test_results=np.where(test_res.copy()>=thresh, 1, 0)
@@ -256,10 +256,10 @@ test_results=np.where(test_res.copy()>=thresh, 1, 0)
 test_im_id, test_contours_total_, test_contours_unmapped= total_contours([0], test_results)
 test_df = analyse_contours([0],test_results)
 # Separate polygons according to criterion
-test_selected = test_df.loc[(test_df['delta_f']>=100) & (test_df['min_f'] < 100), :]
+test_selected = test_df.loc[(test_df['delta_t']>=10) & (test_df['delta_f']>=100) & (test_df['min_f'] < 100), :]
 test_selected_inds = np.array(test_selected.index).astype(int)
 selected_contours = [test_contours_total_[i] for i in test_selected_inds]
-'''
+
 #Find indices of unselected contours.
 test_unselected_inds = [i for i in range(len(test_df)) if i not in test_selected_inds]
 #Make dataframe with features describing each contour for unselected data
@@ -273,9 +273,9 @@ for i in test_selected_inds:
 test_selected['probability'] = probability
 test_selected.to_csv(output_data_fp + f'/{model_name}/{data_name}_selected_contour_analysis.csv',
                      index=False)
-'''
+
 ############### Plot contour properties ###################
-'''
+
 test_selected = pd.read_csv(output_data_fp + f'/{model_name}/{data_name}_selected_contour_analysis.csv')
 #plot of delta t vs delta v with points coloured by output probability.
 plt.tick_params(labelsize=15)
@@ -292,7 +292,7 @@ ax.set_xlabel('Delta t (hours)', fontsize=12)
 ax.set_ylabel('Delta f (kHz)', fontsize=12)
 cbar = fig.colorbar(im, label='Probability')
 plt.savefig(output_data_fp + f'/{model_name}/figures/{data_name}_probability_dt_df.png')
-'''
+
 
 
 

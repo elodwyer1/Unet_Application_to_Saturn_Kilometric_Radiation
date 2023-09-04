@@ -103,6 +103,7 @@ def find_mask(time_view_start, time_view_end, val, polygon_fp):
     return v
 
 #load in full dataset
+'''
 print('load data')
 print('time')
 t_timestamp = np.load(input_data_fp + "/time_indatetime_all_years.npy", allow_pickle=True)
@@ -113,11 +114,12 @@ print('flux')
 flux = np.load(input_data_fp + "/s_all_years.npy", allow_pickle=True)
 print('polarization')
 pol = np.load(input_data_fp + "/p_all_years.npy", allow_pickle=True)
-
+'''
 
 #find true and predicted mask for data
 data_name = 'test_2006'
 #start end end dates that we are looking at
+'''
 start = pd.Timestamp('20060101')
 end = pd.Timestamp('2007-01-01T02:45:00')
 t_start = np.arange(start, end, np.timedelta64(384, "m"))
@@ -130,15 +132,17 @@ true_poly_fp = input_data_fp + '/SKR_LFEs.json'
 predicted_poly_fp = output_data_fp + f'/{model_name}/{data_name}_selected_contours.json'
 
 #calculate true mask for full year.
+
 true_masks=[]
 for day1, day2 in zip(t_start, t_end):
-    print(day1)
+    print(day1, day2)
     a=find_mask(day1, day2, 'v', true_poly_fp) 
     true_masks.append(a)
 #true_masks=np.concatenate(true_masks)
 true_masks=np.array(true_masks)
-np.save(output_data_fp + f'/data_{year}/full_{year}_true_mask.npy', true_masks)
-
+np.save(output_data_fp + f'/{model_name}/test_{year}_true_mask.npy', true_masks)
+'''
+'''
 ##calculate predicted mask for full year
 predicted_masks=[]
 for day1, day2 in zip(t_start, t_end):
@@ -147,13 +151,14 @@ for day1, day2 in zip(t_start, t_end):
     predicted_masks.append(a)
 #predicted_masks=np.concatenate(predicted_masks)
 predicted_masks=np.array(predicted_masks)
-np.save(output_data_fp + f'/{model_name}/full_{year}_predicted_mask.npy', predicted_masks)
-
+np.save(output_data_fp + f'/{model_name}/test_{year}_predicted_mask.npy', predicted_masks)
+'''
 #reload to save memory
+
 year=2006
-true_mask = np.load(output_data_fp + f'/data_{year}/full_{year}_true_mask.npy')
+true_mask = np.load(output_data_fp + f'/{model_name}/test_{year}_true_mask.npy')
 true_mask = np.concatenate(true_mask, axis=1)
-predicted_mask = np.load(output_data_fp + f'/{model_name}/full_{year}_predicted_mask.npy')
+predicted_mask = np.load(output_data_fp + f'/{model_name}/test_{year}_predicted_mask.npy')
 predicted_mask = np.concatenate(predicted_mask, axis=1)
 
 #calculate iou

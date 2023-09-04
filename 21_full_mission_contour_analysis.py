@@ -15,6 +15,7 @@ import pandas as pd
 from astropy.time import Time
 from tfcat import TFCat
 from IPython import get_ipython
+from collections import Counter
 from shapely.geometry import Point, Polygon, LineString, MultiPoint
 import configparser
 config = configparser.ConfigParser()
@@ -277,6 +278,8 @@ def av_overlap_combined(x, y, n, test):
   total_images.append(test[:,middles_[n-1][0]:])
   total_images = np.concatenate(total_images, axis=1)
   return total_images
+def calc_dur(start, end):
+    return ((end-start).total_seconds())
 
 #load probability value for thresholding prediction.
 thresh = np.load(output_data_fp + f'/{model_name}/best_thresh.npy')
@@ -296,9 +299,10 @@ test_contours_total_, test_contours_unmapped= total_contours(test_res, thresh)
 #contains columns 'area', 'min_f'(in kHz),  'delta_f', 'delta_t','delta_f_khz'
 test_df = analyse_contours(test_res, thresh)
 # Separate polygons according to criterion
-test_selected = test_df.loc[(test_df['delta_f']>=100) & (test_df['min_f'] < 100), :]
-'''
+test_selected = test_df.loc[(test_df['delta_t']>=10) & (test_df['delta_f']>=100) & (test_df['min_f'] < 100), :]
+
 #Calculate the average probability within the selected polygons
+
 probability = []
 count=0
 for i in test_selected.index:
@@ -307,10 +311,8 @@ for i in test_selected.index:
     probability.append(p)
     count+=1
 test_selected['probability'] = np.array(probability)
-#save dataframe to output data folder.
-test_selected.to_csv(output_data_fp + f'/{model_name}/{data_name}_selected_contours.csv',
-                     index=False)
-'''
+
+
 
 ##### Convert from binary Mask to actual frequency-time coords ###
 #times in unix that correspond to the pixel indices
@@ -339,13 +341,32 @@ for i in test_selected_inds:
     
 
 df = make_dataframe(time_contours_unix, f_contours_khz)
+df['probability'] = probability
+df['label'] = np.repeat('LFE', len(df))
+df.loc[:, 'min_f'] = [min(i) for i in f_contours_khz]
 dupes = df.loc[df.duplicated(subset=['start'], keep=False), :]
-df_ = df.sort_values(by='end')
+df_ = df.sort_values(by='start')
 df_ = df_.drop_duplicates(subset='start', keep='last')
+#calculate duration 
+dur =  df_.apply(lambda x: calc_dur(x.start, x.end), axis=1)
+df_['dur'] = dur
+df_.loc[df_['min_f']>=40, 'label'] = 'LFE_sm'
+df_.loc[df_['dur']>=39600, 'label'] = 'LFE_m'
+
+#save contour properties to output data folder
+test_selected = test_selected.reset_index(drop=True).loc[df_.index, :]
+test_selected.to_csv(output_data_fp + f'/{model_name}/{data_name}_selected_contours.csv',
+                     index=False)
+
+
+df_final = df_.loc[:,['start', 'end','label', 'probability']].reset_index(drop=True)
+counts_types = Counter(df_final['label'])
+
 inds_keep = np.array(df_.index)
 t_final = np.array(time_contours_unix,dtype=object)[inds_keep]
 f_final = np.array(f_contours_khz,dtype=object)[inds_keep]
-
+l_final = df_['label']
 fp_sav = output_data_fp + f"/{model_name}/{data_name}_catalogue.json"
-#write_json(fp_sav, time_contours_unix, f_contours_kHz)
-#df_.to_csv(output_data_fp + f"/{model_name}/{data_name}_catalogue.csv", index=False)
+
+write_json(fp_sav, t_final, f_final, l_final)
+df_final.to_csv(output_data_fp + f"/{model_name}/{data_name}_catalogue.csv", index=False)

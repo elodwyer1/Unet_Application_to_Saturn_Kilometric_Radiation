@@ -37,7 +37,7 @@ def legend_without_duplicate_labels(ax, loc_):
     handles, labels = ax.get_legend_handles_labels()
     unique = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
     legend_properties = {'weight':'bold'}
-    ax.legend(*zip(*unique), loc=loc_,fontsize=14,labelcolor='orangered',fancybox=True)
+    ax.legend(*zip(*unique), loc=loc_,fontsize=14,labelcolor='salmon',fancybox=True)
     
 
 '''____This was adapted from original code for the space labelling tool!!!___'''
@@ -160,7 +160,7 @@ def plot_mask(ax,time_view_start, time_view_end, val, file_data,polygon_fp,colou
         for shape in colour_in:
             shape_=shape.copy()
             shape_[:,0]=[mdates.date2num(datetime.utcfromtimestamp(i)) for i in shape_[:,0]]
-            ax.add_patch(Polygon(shape_,  color='orangered', linewidth=4, alpha=1, fill=False,label='Predicted Polygon'))
+            ax.add_patch(Polygon(shape_,  color='salmon', linewidth=3.2, alpha=1, fill=False,label='Predicted Polygon'))
     legend_without_duplicate_labels(ax,'lower right')
     ax.set_xlim(time_dt64[0], time_dt64[-1])
     
@@ -239,7 +239,7 @@ def plot_flux(ax,time_view_start, time_view_end, file, colour_in=None,
         for shape in colour_in:
             shape_=shape.copy()
             shape_[:,0]=[mdates.date2num(datetime.utcfromtimestamp(i)) for i in shape_[:,0]]
-            ax.add_patch(Polygon(shape_, color='orangered', linewidth=4, alpha=1, fill=False,label='Predicted Polygon'))
+            ax.add_patch(Polygon(shape_, color='salmon', linewidth=3.2, alpha=1, fill=False,label='Predicted Polygon'))
     legend_without_duplicate_labels(ax,'upper right')
     ax.set_xlim(time[0], time[-1])
     plt.close(fig)
@@ -269,7 +269,7 @@ def plot_test_res(ax, time_view_start, time_view_end, colour_in, fontsize=20):
     for shape in colour_in:
         shape_=shape.copy()
         shape_[:,0]=[mdates.date2num(datetime.utcfromtimestamp(i)) for i in shape_[:,0]]
-        ax.add_patch(Polygon(shape_, color='orangered', linewidth=4, alpha=1, fill=False, label='Predicted Polygon'))
+        ax.add_patch(Polygon(shape_, color='salmon', linewidth=3.2, alpha=1, fill=False, label='Predicted Polygon'))
     
     ax.set_xlim(time[0], time[-1])
     plt.close(fig)
@@ -341,7 +341,7 @@ def plot_pol(ax,time_view_start, time_view_end, file,colour_in=None,frequency_li
         for shape in colour_in:
             shape_=shape.copy()
             shape_[:,0]=[mdates.date2num(datetime.utcfromtimestamp(i)) for i in shape_[:,0]]
-            ax.add_patch(Polygon(shape_, color='orangered', linewidth=2, alpha=1, fill=False, label='Predicted Polygon'))
+            ax.add_patch(Polygon(shape_, color='salmon', linewidth=3.2, alpha=1, fill=False, label='Predicted Polygon'))
     
     ax.set_xlim(time[0], time[-1])
     plt.close(fig)
@@ -423,15 +423,16 @@ def plot_freq_evolution(ax, freq, time):
     cax.set_xticks([])
     cax.set_yticks([])
     return ax
-data_name = 'test_2004001_2017258'
+data_name = '2004001_2017258'
 polygon_fp = output_data_fp + f"/{model_name}/{data_name}_catalogue.json"
 plt.ioff()
 if not path.exists(output_data_fp + f'/{model_name}/{data_name}_result_figs/'):
     os.makedirs(output_data_fp + f'/{model_name}/{data_name}_result_figs/')
 df = pd.read_csv(output_data_fp + f'/{model_name}/{data_name}_catalogue.csv',
                  parse_dates=['start','end'])
-start_inds = [[4554, 4555], [1446,1437], [2527, 4252]]
-end_inds = [[4554, 4555], [1446, 1438], [2527, 4252]]
+
+start_inds = [[4488, 4489], [1411,1402], [2481, 4191]]
+end_inds = [[4488, 4489], [1411, 1403], [2481, 4191]]
 labels = [['a', 'b'], ['c','d'], ['e', 'f']]
 plt.ioff()   
         
@@ -462,7 +463,3 @@ for num in range(3):
     plt.close(fig)
     print('saved')
 
-
-
-
-    

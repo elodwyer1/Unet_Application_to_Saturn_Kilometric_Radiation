@@ -172,8 +172,6 @@ def av_overlap_combined(x, y, n, test):
 """#### Load Data from Drive"""
 
 data_name = '2004001_2017258'
-
-#Load training data from drive and unzip into colab notebook.
 test_path= output_data_fp + f'/data_{data_name}/test_{data_name}/'
 ## Load Testing Ids
 test_ids = next(os.walk(test_path))[1]
@@ -195,7 +193,6 @@ best_test_iou = np.load(checkpoint_filepath+'/best_thresh.npy')
 
 #save results to folder after generating prediction
 result_path = checkpoint_filepath+ f'/{data_name}/results/'
-'''
 if not os.path.exists(result_path):
   os.makedirs(result_path)
 num_saved = len(next(os.walk(checkpoint_filepath+ f'/{data_name}/results')))
@@ -233,17 +230,17 @@ for i in ids_second:
     test_results.append(r)
 test_results = np.array(test_results)
 np.save(checkpoint_filepath + f'/{data_name}_2.npy', test_results)
-'''
+
 """### Get Average overlap of images."""
-test_results1 = np.load(checkpoint_filepath + f'/test_{data_name}_1.npy')
-test_results2 = np.load(checkpoint_filepath + f'/test_{data_name}_2.npy')
+test_results1 = np.load(checkpoint_filepath + f'/{data_name}_1.npy')
+test_results2 = np.load(checkpoint_filepath + f'/{data_name}_2.npy')
 
 #concatenate to get total of the predicted images in one numpy array.
 test_results = np.concatenate([test_results1, test_results2],axis=0)
 #concatenate results into one long array.
 test_results_concat = np.concatenate(test_results[:,0,:,:,0], axis=1)
 #save array in this format.
-#np.save(checkpoint_filepath + f'/{data_name}_total_results.npy', test_results_concat)
+np.save(checkpoint_filepath + f'/{data_name}_total_results.npy', test_results_concat)
 
 
 #Average overlaps and rejoin

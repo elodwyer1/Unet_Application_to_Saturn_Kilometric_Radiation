@@ -19,7 +19,6 @@ input_data_fp = config['filepaths']['input_data']
 output_data_fp= config['filepaths']['output_data']
 model_name = config['filepaths']['model_name']
 
-
 def get_contours(mask):
     cv2img = mask.astype(np.uint8)
     contours, hierarchy = cv2.findContours(cv2img, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
@@ -133,7 +132,8 @@ test_df.to_csv(output_data_fp + f'/{model_name}' + '/contour_analysis_test_data.
 
 ######Apply post-processing criterion to contours.########
 #Dataframe with information on the contours that satisfy criterion
-test_selected = test_df.loc[(test_df['delta_f']>=100) & (test_df['min_f'] < 100), :]
+test_selected = test_df.loc[(test_df['delta_t']>=10) & (test_df['delta_f']>=100) & (test_df['min_f'] < 100), :]
+
 #This is an array with the indices of contours that pass criterion with respect to total contours.
 test_selected_inds = np.array(test_selected.index).astype(int)
 #Assign column with index of each contour
@@ -151,7 +151,7 @@ test_unselected = test_df.loc[test_unselected_inds, :].reset_index(drop=True)
 test_unselected.insert(4, 'ind', test_unselected_inds, True)
 
 ############ Remove contours from mask that didn't fulfill criterion#########
-'''
+
 test_processed_masks=[]
 for i in test_num_:
     print(f'test number {i}/{len(test_num_)}', end='\n')
@@ -160,7 +160,7 @@ for i in test_num_:
 test_processed_masks=np.array(test_processed_masks)
 np.save(output_data_fp + f'/{model_name}' + '/test_processed_masks_withhigherthresh.npy', test_processed_masks)
 
-'''
+
 ###### Analyse Training Set ###############################
 
 #Load Data
@@ -191,7 +191,7 @@ train_df.to_csv(output_data_fp + f'/{model_name}' + '/contour_analysis_train_dat
 
 ######Apply post-processing criterion to contours.########
 #Dataframe with information on the contours that satisfy criterion
-train_selected = train_df.loc[(train_df['delta_f']>=100) & (train_df['min_f'] < 100), :]
+train_selected = train_df.loc[(train_df['delta_t']>=10) & (train_df['delta_f']>=100) & (train_df['min_f'] < 100), :]
 #This is an array with the indices of contours that pass criterion with respect to total contours.
 train_selected_inds = np.array(train_selected.index).astype(int)
 #Assign column with index of each contour
@@ -213,14 +213,13 @@ train_lfe = train_unselected.loc[train_unselected['label']!='NoLFE', 'id']
 train_nolfe = train_unselected.loc[train_unselected['label']=='NoLFE', 'id']
 print(test_lfe.nunique(), test_nolfe.nunique())
 print(train_lfe.nunique(), train_nolfe.nunique())
-'''
+
 
 ############ Remove contours from mask that didn't fulfill criterion#########
 train_processed_masks=[]
 for i in train_num_:
-    print(f'train number {i}/{len(train_num_)}', end='\r')
+    print(f'train number {i}/{len(train_num_)}', end='\n')
     mask = remove(i, train_unselected, train_results_masked, train_contours_unmapped)   
     train_processed_masks.append(mask)
 train_processed_masks=np.array(train_processed_masks)
 np.save(output_data_fp + f'/{model_name}' + '/train_processed_masks_withhigherthresh.npy', train_processed_masks)
-'''
