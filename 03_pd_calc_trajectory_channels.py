@@ -27,7 +27,7 @@ def interpolate_traj(start, end):
     #print(start)
     traj_df_chunk=return_trajectory_chunk(start, end)
         
-    lats = traj_df_chunk['lat']
+    lats = traj_df_chunk['lat_krtp']
     
     
     #Normalize to between 0 and 1.
