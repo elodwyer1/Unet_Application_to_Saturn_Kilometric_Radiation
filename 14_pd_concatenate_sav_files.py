@@ -8,7 +8,7 @@ Created on Mon Jan 16 14:46:12 2023
 import numpy as np
 from scipy.io import readsav
 import configparser
-
+import pandas as pd
 config = configparser.ConfigParser()
 config.read('configurations.ini')
 input_data_fp = config['filepaths']['input_data']
@@ -34,10 +34,13 @@ for year in years:
 all_t = np.concatenate(t)
 all_s = np.concatenate(s, axis=1)
 all_v = np.concatenate(v, axis=1)
-f=np.array(data['f'])   
+f=np.array(data['f'])  
+doy_one = pd.Timestamp(str(1997)) - pd.Timedelta(1, 'D')
+t_timestamp = np.array([doy_one + pd.Timedelta(t * 1440, 'm') for t in all_t],
+    dtype=pd.Timestamp)
 #save lists to input data filepath.
 s = np.save(input_data_fp + "/flux_all_years.npy", all_s)
 v = np.save(input_data_fp + "/pol_all_years.npy",all_v)
 t_doy=np.save(input_data_fp + "/time_all_years.npy", all_t)
-
+np.save(input_data_fp + "time_indatetime_all_years.npy", t_timestamp)
 
