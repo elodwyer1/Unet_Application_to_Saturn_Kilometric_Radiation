@@ -60,7 +60,7 @@ lfe_times=pd.concat(lfe_times, axis=0)
 
 
 
-latitude=traj_data['lat']
+latitude=traj_data['lat_krtp']
 time = traj_data['doyfrac']
 time_doy04 = traj_data['datetime_ut'].apply(datetime_todoy2004)
 
@@ -125,7 +125,7 @@ for i in range(len(x_)):
     ax3.plot(x_[i], y_[i],linewidth=0.5, color='gray')  
 for i, j in zip(lfe['start'], lfe['end']):
     traj = traj_data.loc[traj_data['datetime_ut'].between(i, j),:]
-    ax3.plot(traj['localtime'], traj['lat'], linewidth=0.5, color='orange', label='LFE')
+    ax3.plot(traj['localtime'], traj['lat_krtp'], linewidth=0.5, color='orange', label='LFE')
 
 ax3.set_xlabel('Local Time (Hrs)',fontsize=22)
 ax3.set_ylabel('Latitude ($^{\circ}$)',fontsize=22)
