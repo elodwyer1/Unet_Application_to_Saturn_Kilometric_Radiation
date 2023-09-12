@@ -62,7 +62,7 @@ nolfe_times=pd.concat(nolfe_times, axis=0)
 lfe_and_nolfe = pd.concat([lfe_times, nolfe_times], axis=0)
 lfe_and_nolfe=lfe_and_nolfe.sort_values(by=['datetime_ut'])
 
-latitude=traj_data['lat']
+latitude=traj_data['lat_krtp']
 time = traj_data['doyfrac']
 time_doy04 = traj_data['datetime_ut'].apply(datetime_todoy2004)
 
@@ -129,10 +129,10 @@ for i in range(len(x_)):
     ax3.plot(x_[i], y_[i],color='gray')  
 for i, j in zip(lfe['start'], lfe['end']):
     traj = traj_data.loc[traj_data['datetime_ut'].between(i, j),:]
-    ax3.plot(traj['localtime'], traj['lat'], linewidth=1,color='orange', label='LFE')
+    ax3.plot(traj['localtime'], traj['lat_krtp'], linewidth=1,color='orange', label='LFE')
 for i, j in zip(nolfe['start'], nolfe['end']):
     traj = traj_data.loc[traj_data['datetime_ut'].between(i, j),:]
-    ax3.plot(traj['localtime'], traj['lat'],linewidth=1, color='skyblue', label='Non-LFE')
+    ax3.plot(traj['localtime'], traj['lat_krtp'],linewidth=1, color='skyblue', label='Non-LFE')
 ax3.set_xlabel('Local Time (Hrs)',fontsize=22)
 ax3.set_ylabel('Latitude ($^{\circ}$)',fontsize=22)
 ax3.set_ylim(-90,90)
