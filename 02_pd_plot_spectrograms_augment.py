@@ -404,7 +404,7 @@ def plot_andaugment_pol_and_flux2(time_view_start, time_view_end, file,fp_sav,in
 total_df=pd.read_csv(input_data_fp + "/total_timestamps.csv", parse_dates=['start','end'])
 total_df_nosm = total_df.loc[total_df['label']!='LFE_sm', :].reset_index(drop=True)
 lfe_df = total_df.loc[~total_df['label'].isin(['LFE_sm', 'NoLFE'])].reset_index(drop=True)
-nolfe_df = pd.read_csv(input_data_fp + '/nolfe_timestamps.csv',parse_dates=['start','end'])
+nolfe_df = total_df.loc[total_df['label']=='NoLFE', :].reset_index(drop=True)
 
 
 random.seed=42
