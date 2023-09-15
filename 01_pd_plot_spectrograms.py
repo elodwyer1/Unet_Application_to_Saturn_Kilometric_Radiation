@@ -41,9 +41,33 @@ def get_polygons(polygon_fp,start, end):
                     polygon_array.append(catalogue._data.features[i]['geometry']['coordinates'][0])
 #polgyon array contains a list of the co-ordinates for each polygon within the time interval           
     return polygon_array
+def find_emptymask(time_view_start, time_view_end, val, file_data,polygon_fp, ind, fp_sav):
+    #signal data and time frequency values within the time range specified.
+    time_dt64, frequency, flux=extract_data(file_data, time_view_start, time_view_end, val)
+    
+    v = np.empty(flux.shape)
+    v[:] = np.nan
+    
+    #width and height of array (f,t)
+    w = len(time_dt64) 
+    h = len(frequency)
+    
+    #Make figure
+    fig = plt.figure(frameon=False,figsize=(w/100,h/100))
+    ax = plt.Axes(fig, [0., 0., 1., 1.])
+    fig.add_axes(ax)  
+    ax.set_axis_off()
+    cmap = mpl.colors.ListedColormap(['white']).copy()
+    cmap.set_bad('black')
+    ax.pcolormesh(time_dt64,frequency, v,cmap=cmap,shading='auto')
+    ax.set_axis_off()
+    ax.set_yscale('log')
+    figure_label = fp_sav + '/mask_images/mask_img' +str(ind).zfill(4)+'.png'
+    fig.savefig(figure_label)
+    plt.close(fig)
+    return None
 
-
-def find_mask(time_view_start, time_view_end, val, file_data,polygon_fp,ind,fp_sav):
+def find_mask(time_view_start, time_view_end, val, file_data,polygon_fp, ind, fp_sav):
     #polgyon array contains a list of the co-ordinates for each polygon within the time interval
     polygon_array=get_polygons(polygon_fp, time_view_start, time_view_end)
     #signal data and time frequency values within the time range specified.
@@ -164,7 +188,13 @@ def plot_pol_and_flux(time_view_start, time_view_end, file,ind,fp_sav):
 polygon_fp= input_data_fp + "/SKR_LFEs.json"
 #Load start and end times of LFEs and non-LFEs
 total_df=pd.read_csv(input_data_fp + "/total_timestamps.csv", parse_dates=['start','end'])
+
 total_df_nosm = total_df.loc[total_df['label']!='LFE_sm', :].reset_index(drop=True)
+
+lfe_df = total_df.loc[~total_df['label'].isin(['LFE_sm', 'NoLFE'])].reset_index(drop=True)
+
+nolfe_df = total_df.loc[total_df['label']=='NoLFE', :].reset_index(drop=True)
+
 start = total_df_nosm['start']
 end=total_df_nosm['end']
 lfe_index = np.arange(len(total_df_nosm))
@@ -175,8 +205,9 @@ if not path.exists(output_data_fp + '/pol_images/'):
     makedirs(output_data_fp + '/pol_images/')
 if not path.exists(output_data_fp + '/mask_images/'):
     makedirs(output_data_fp + '/mask_images/')
-#make each image
-for day1, day2, i in zip(start, end,lfe_index):
+    
+#make LFE images
+for day1, day2, i in zip(lfe_df['start'], lfe_df['end'], lfe_df.index):
     year = datetime.strftime(day1, '%Y')
     if year == '2017':
         file = input_data_fp +'/SKR_2017_001-258_CJ.sav'
@@ -190,4 +221,21 @@ for day1, day2, i in zip(start, end,lfe_index):
     #make corresponding masked spectrogram and save as image.
     a=find_mask(day1, day2, val, file, polygon_fp, i, output_data_fp) 
     print(i)
-    
+
+#Make noLFE images
+nolfe_index = np.arange(len(lfe_df), len(total_df_nosm))
+
+for day1, day2, i in zip(nolfe_df['start'], nolfe_df['end'], nolfe_index):
+    year = datetime.strftime(day1, '%Y')
+    if year == '2017':
+        file = input_data_fp +'/SKR_2017_001-258_CJ.sav'
+    else: 
+        file = input_data_fp + '/SKR_{}_CJ.sav'.format(year)
+    plt.ioff()
+    #make flux and polarization spectrograms and save as images.
+    plot_pol_and_flux(day1, day2, file, i,output_data_fp)
+    val='s'
+    polygon_fp= input_data_fp + "/SKR_LFEs.json"
+    #make corresponding masked spectrogram and save as image.
+    a=find_emptymask(day1, day2, val, file, polygon_fp, i, output_data_fp) 
+    print(i)
