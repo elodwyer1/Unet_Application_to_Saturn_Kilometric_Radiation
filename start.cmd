@@ -15,4 +15,3 @@ for %%y in (%years%) do (
     rem Download the data for the current year
     powershell -Command "Invoke-WebRequest -Uri 'https://pds-ppi.igpp.ucla.edu/ditdos/write?id=urn:nasa:pds:cassini-mag-cal:data-1min-ksm:%%y_fgm_ksm_1m::1.0&f=csv' -OutFile '%download_dir%\%%y_FGM_KSM_1M.csv'"
     powershell -Command "Invoke-WebRequest -Uri 'https://pds-ppi.igpp.ucla.edu/ditdos/write?id=urn:nasa:pds:cassini-mag-cal:data-1min-krtp:%%y_fgm_krtp_1m::1.0&f=csv' -OutFile '%download_dir%\%%y_FGM_KRTP_1M.csv'"
-)
