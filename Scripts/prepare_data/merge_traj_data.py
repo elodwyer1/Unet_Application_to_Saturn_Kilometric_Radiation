@@ -10,6 +10,7 @@ import sqlite3
 import logging
 from ..read_config import config
 
+
 def traject(year: int, config: config):
     # Filepaths
     fp_krtp = f"{config.input_data_fp}/{year}_FGM_KRTP_1M.csv"

@@ -1,0 +1,65 @@
+Metadata-Version: 2.1
+Name: TFCat
+Version: 1.0.1
+Summary: Time-Frequency Catalogue (TFCat) Python module.
+Author-email: Baptiste Cecconi <baptiste.cecconi@obspm.fr>, Xavier Bonnin <xavier.bonnin@obspm.fr>, Alan Loh <alan.loh@obspm.fr>, Adam Boudouma <adam.boudouma@obspm.fr>
+License: MIT License
+        
+        Copyright (c) 2021-2022, contributors from the MASER Team (B. Cecconi,
+        X. Bonnin, A. Loh, M. B. Taylor)
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://gitlab.obspm.fr/maser/catalogues/tfcat
+Project-URL: Bug Tracker, https://gitlab.obspm.fr/maser/catalogues/tfcat/-/issues
+Keywords: radio astronomy,catalogue
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: astropy
+Requires-Dist: matplotlib
+Requires-Dist: shapely <2
+Requires-Dist: jsonschema
+
+#  Time-Frequency Catalogue (TFCat) Python Module
+
+This module implements an interface for loading TFCat JSON 
+data files. 
+
+TFCat JSON Specification: [TFcat](https://gitlab.obspm.fr/maser/catalogues/catalogue-format)
+
+TFCat JSON Schema: https://voparis-ns.obspm.fr/maser/tfcat/v1.0/schema#
+
+*This version 1.0.0*
+
+## Installation
+
+TFCat is available from PyPI: https://pypi.org/project/TFCat/
+
+```
+pip install TFCat
+```
+
+
+## Acknowlegments
+- This TFCat library has been derived from the 
+  [jazzband/geojson](https://github.com/jazzband/geojson) python library.

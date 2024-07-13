@@ -11,7 +11,10 @@ rem Check if the directory exists, and create it if it doesn't
 if not exist "%download_dir%" mkdir "%download_dir%"
 
 rem Iterate through the list of years and download the data
-for %%y in (%years%) do (
-    rem Download the data for the current year
-    powershell -Command "Invoke-WebRequest -Uri 'https://pds-ppi.igpp.ucla.edu/ditdos/write?id=urn:nasa:pds:cassini-mag-cal:data-1min-ksm:%%y_fgm_ksm_1m::1.0&f=csv' -OutFile '%download_dir%\%%y_FGM_KSM_1M.csv'"
-    powershell -Command "Invoke-WebRequest -Uri 'https://pds-ppi.igpp.ucla.edu/ditdos/write?id=urn:nasa:pds:cassini-mag-cal:data-1min-krtp:%%y_fgm_krtp_1m::1.0&f=csv' -OutFile '%download_dir%\%%y_FGM_KRTP_1M.csv'"
+rem for %%y in (%years%) do (
+    rem rem Download the data for the current year
+    rem powershell -Command "Invoke-WebRequest -Uri 'https://pds-ppi.igpp.ucla.edu/ditdos/write?id=urn:nasa:pds:cassini-mag-cal:data-1min-ksm:%%y_fgm_ksm_1m::1.0&f=csv' -OutFile '%download_dir%\%%y_FGM_KSM_1M.csv'"
+     rem powershell -Command "Invoke-WebRequest -Uri 'https://pds-ppi.igpp.ucla.edu/ditdos/write?id=urn:nasa:pds:cassini-mag-cal:data-1min-krtp:%%y_fgm_krtp_1m::1.0&f=csv' -OutFile '%download_dir%\%%y_FGM_KRTP_1M.csv'"
+
+rem Download LFE coordinates
+powershell -Command "Invoke-WebRequest -Uri 'https://zenodo.org/records/8074022/files/SKR_LFEs_v3.json?download=1' -OutFile '%download_dir%\SKR_LFEs.json'"
