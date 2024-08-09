@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/415716905156894235/880264951c6448ac836dfac8fd85167a/artifacts
+end_time: 1722955955189
+entry_point_name: ''
+experiment_id: '415716905156894235'
+lifecycle_stage: active
+run_id: 880264951c6448ac836dfac8fd85167a
+run_name: learned-shrike-200
+run_uuid: 880264951c6448ac836dfac8fd85167a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1722955815030
+status: 4
+tags: []
+user_id: beth
