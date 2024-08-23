@@ -152,8 +152,8 @@ with mlflow.start_run() as run:
         print(f"Metrics for epoch {epoch} logged to MLflow")
 
     # Save and log the final model
-    #model.load_weights(os.path.join(config.output_data_fp, MODEL_NAME))
-    #model_save_path = os.path.join(config.output_data_fp, MODEL_NAME)
+    model.load_weights(os.path.join(config.output_data_fp, MODEL_NAME))
+    model_save_path = os.path.join(config.output_data_fp, MODEL_NAME)
     
     #tf.keras.models.save_model(model, model_save_path)
     mlflow.tensorflow.log_model(model, artifact_path="model")
