@@ -1,6 +1,6 @@
 # Unet_Application_to_Saturn_Kilometric_Radiation
 
-Python scripts for the study titled 'Image-based classification of intense radio bursts from1 spectrograms: An application to Saturn Kilometric Radiation' published to the [Journal of Geophysical Research](https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2023JA031926). In this paper we describe how we train a modified U-net architecture for semantic segmentation of Low Frequency Extensions (LFEs) of Saturn Kilometric Radiation (SKR) detected by Cassini/RPWS. We train the model using a catalogue found at (https://doi.org/10.5281/zenodo.7895766).
+Python scripts for the study titled 'Image-based classification of intense radio bursts from spectrograms: An application to Saturn Kilometric Radiation' published to the [Journal of Geophysical Research](https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2023JA031926). In this paper we describe how we train a modified U-net architecture for semantic segmentation of Low Frequency Extensions (LFEs) of Saturn Kilometric Radiation (SKR) detected by Cassini/RPWS. We train the model using a catalogue found at (https://doi.org/10.5281/zenodo.7895766).
 
 The batch file (start.cmd) found in the project root can be run to download the spacecraft trajectory data and the training set listed above. The Cassini radio data can be found [here](https://doi.org/10.25935/zkxb-6c84). It needs to be concatenated from daily to yearly files and normalised to 1 astronomical unit (AU) before it can be used in the model. I'm working on incorporating this into the current scripts.
 
